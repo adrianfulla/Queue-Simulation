@@ -4,16 +4,16 @@ import time
 from Server import Server
 
 class QueueingSystem:
-    def __init__(self, arrival_rate, service_rate, num_servers, discipline, max_system_size, source_size, update_gui):
-        self.arrival_rate = arrival_rate
-        self.service_rate = service_rate
+    def __init__(self, arrival_dist, service_dist, num_servers, discipline, max_system_size, source_size, update_gui):
+        self.arrival_dist = arrival_dist
+        self.service_dist = service_dist
         self.num_servers = num_servers
         self.discipline = discipline
         self.max_system_size = max_system_size
         self.source_size = source_size
         self.queue = queue.Queue(maxsize=max_system_size)
         self.servers = [
-            Server(i, self.queue, service_rate, discipline, update_gui)
+            Server(i, self.queue, service_dist, update_gui)
             for i in range(num_servers)
         ]
         self.running = True
@@ -26,7 +26,7 @@ class QueueingSystem:
         customer_id = 0
         while self.running:
             if self.queue.qsize() < self.max_system_size:
-                inter_arrival_time = random.expovariate(self.arrival_rate)
+                inter_arrival_time = self.arrival_dist.rvs()
                 time.sleep(inter_arrival_time)
                 if customer_id < self.source_size:
                     try:

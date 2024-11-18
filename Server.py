@@ -5,28 +5,20 @@ import random
 
 
 class Server(threading.Thread):
-    def __init__(self, server_id, queue, service_rate, discipline, update_gui):
+    def __init__(self, server_id, queue, service_dist, update_gui):
         super().__init__()
         self.server_id = server_id
         self.queue = queue
-        self.service_rate = service_rate
-        self.discipline = discipline
+        self.service_dist = service_dist
         self.running = True
         self.update_gui = update_gui
 
     def run(self):
         while self.running:
             try:
-                if self.discipline == 'FIFO':
-                    customer = self.queue.get(timeout=1)
-                elif self.discipline == 'LIFO':
-                    customer = self.queue.queue.pop()
-                    self.queue.task_done()
-                else:
-                    raise ValueError(f"Unsupported discipline: {self.discipline}")
-
+                customer = self.queue.get(timeout=1)
                 self.update_gui(self.server_id, f"Serving {customer}")
-                service_time = random.expovariate(self.service_rate)
+                service_time = self.service_dist.rvs()
                 time.sleep(service_time)
                 self.update_gui(self.server_id, "Idle")
             except queue.Empty:
