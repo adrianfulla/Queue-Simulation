@@ -2,7 +2,7 @@ from QueuingSystem import QueueingSystem
 import threading
 from tkinter import ttk
 import tkinter as tk
-from scipy.stats import expon, erlang, uniform
+from scipy.stats import expon, erlang, uniform 
 
 
 class QueueingSystemSetup:
